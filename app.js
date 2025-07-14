@@ -1,8 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
-const swaggerDoc = require('./config/swagger');
-const userRoutes = require('./routes/user.routes');
+const swaggerDoc = require('./src/config/swagger');
+const userRoutes = require('./src/routes/user.routes');
 
 const app = express();
 
