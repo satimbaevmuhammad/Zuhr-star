@@ -15,7 +15,7 @@ app.use('/uploads', express.static('uploads'));
 app.use('/api/users', userRoutes);
 
 // Swagger
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
 // 404
 app.use((req, res) => res.status(404).json({ message: 'Route not found' }));

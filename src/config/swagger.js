@@ -10,7 +10,7 @@ const options = {
     },
     servers: [
       {
-        url: 'https://your-app-name.onrender.com', // Render deployment URL (keyin yangilaysiz)
+        url: 'https://zuhr-star-4.onrender.com', // Render deployment URL (keyin yangilaysiz)
       },
     ],
   },
