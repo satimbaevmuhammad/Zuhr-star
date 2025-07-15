@@ -1,5 +1,4 @@
 const swaggerJsdoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
 
 const options = {
   definition: {
@@ -11,12 +10,13 @@ const options = {
     },
     servers: [
       {
-        url: 'https://zuhr-star-4.onrender.com', // Render'dagi URL
+        url: 'https://zuhr-star-4.onrender.com',
       },
     ],
   },
-  apis: ['./src/routes/*.js'], // Swagger commentlar qaerda yozilganini ko'rsatadi
+  apis: ['./src/routes/*.js'], // Bu commentlar yozilgan route papkasi
 };
 
 const swaggerSpec = swaggerJsdoc(options);
 
+module.exports = swaggerSpec; // Faqat `spec` ni export qilamiz
