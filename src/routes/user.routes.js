@@ -1,33 +1,13 @@
 const express = require('express');
 const router = express.Router();
+const { loginUser, getProtectedData } = require('../controllers/user.controller');
+const authMiddleware = require('../middlewares/auth.middleware');
 
 /**
- * @swagger
- * tags:
- *   name: Users
- *   description: User management
-
  * @swagger
  * /api/users:
  *   get:
  *     summary: Get all users
- *     tags: [Users]
- *     responses:
- *       200:
- *         description: A list of users
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                     example: 1
- *                   name:
- *                     type: string
- *                     example: John Doe
  */
 router.get('/', (req, res) => {
   res.json([
@@ -35,5 +15,21 @@ router.get('/', (req, res) => {
     { id: 2, name: 'Jane Doe' },
   ]);
 });
+
+/**
+ * @swagger
+ * /api/users/login:
+ *   post:
+ *     summary: Login and get token
+ */
+router.post('/login', loginUser);
+
+/**
+ * @swagger
+ * /api/users/protected:
+ *   get:
+ *     summary: Protected route
+ */
+router.get('/protected', authMiddleware, getProtectedData);
 
 module.exports = router;
