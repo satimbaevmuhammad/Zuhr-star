@@ -1,22 +1,27 @@
-const swaggerJSDoc = require('swagger-jsdoc');
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 
 const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'CRM API',
+      title: 'JWT bilan API',
       version: '1.0.0',
-      description: 'CRM system backend API documentation',
+      description: 'JWT autentifikatsiya bilan Express API',
     },
     servers: [
       {
-        url: 'https://zuhr-star-4.onrender.com', // Render deployment URL (keyin yangilaysiz)
+        url: 'https://zuhr-star-4.onrender.com', // Render'dagi URL
       },
     ],
   },
-  apis: ['./routes/*.js'], // Swagger uchun JSDoc yozilgan fayllar yo'li
+  apis: ['./src/routes/*.js'], // Swagger commentlar qaerda yozilganini ko'rsatadi
 };
 
-const swaggerSpec = swaggerJSDoc(options);
+const swaggerSpec = swaggerJsdoc(options);
 
-module.exports = swaggerSpec;
+const swaggerDocs = (app) => {
+  app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+};
+
+module.exports = swaggerDocs;
