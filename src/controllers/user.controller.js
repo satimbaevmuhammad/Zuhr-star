@@ -31,14 +31,23 @@ exports.loginUser = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(401).json({ message: 'Parol noto‘g‘ri' });
 
-    const token = jwt.sign(
+    // Access token (короткий срок)
+    const accessToken = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: '1d' }
+      { expiresIn: '15m' }
+    );
+
+    // Refresh token (долгий срок)
+    const refreshToken = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_REFRESH_SECRET,
+      { expiresIn: '7d' }
     );
 
     res.json({
-      token,
+      accessToken,
+      refreshToken,
       user: {
         name: user.name,
         phone: user.phone,

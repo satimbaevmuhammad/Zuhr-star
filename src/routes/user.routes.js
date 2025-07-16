@@ -8,6 +8,7 @@ const {
 
 const auth = require('../middlewares/auth.middleware');
 const checkRole = require('../middlewares/checkRole');
+const jwt = require('jsonwebtoken');
 
 /**
  * @swagger
@@ -122,5 +123,52 @@ router.post('/register', auth, checkRole('superadmin'), registerUser);
  *         description: Token yo'q yoki noto'g'ri
  */
 router.get('/protected', auth, getProtectedData);
+
+/**
+ * @swagger
+ * /api/users/refresh:
+ *   post:
+ *     summary: Получить новый access token по refresh token
+ *     description: Принимает refresh token и возвращает новый access token.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               refreshToken:
+ *                 type: string
+ *                 example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *     responses:
+ *       200:
+ *         description: Новый access token успешно выдан
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 accessToken:
+ *                   type: string
+ *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *       401:
+ *         description: Refresh token невалидный или истёк
+ */
+router.post('/refresh', async (req, res) => {
+  const { refreshToken } = req.body;
+  if (!refreshToken) return res.status(401).json({ message: 'Refresh token kerak' });
+
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    const accessToken = jwt.sign(
+      { id: decoded.id, role: decoded.role },
+      process.env.JWT_SECRET,
+      { expiresIn: '15m' }
+    );
+    res.json({ accessToken });
+  } catch (err) {
+    return res.status(401).json({ message: 'Refresh token noto‘g‘ri yoki eskirgan' });
+  }
+});
 
 module.exports = router;
