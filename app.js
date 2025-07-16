@@ -14,7 +14,10 @@ app.use(express.json());
 app.use('/api/users', userRoutes);
 
 // ✅ Swagger ni `/docs` routega ulang
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/docs', (req, res, next) => {
+    res.setHeader("Content-Security-Policy", "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;");
+    next();
+}, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // 404 handler
 app.use((req, res) => res.status(404).json({ message: 'Route not found' }));
