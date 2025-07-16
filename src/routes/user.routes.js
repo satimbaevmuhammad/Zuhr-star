@@ -46,6 +46,11 @@ router.post('/login', loginUser);
  * /api/users/protected:
  *   get:
  *     summary: Protected route
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Xush kelibsiz
  */
 router.get('/protected', authMiddleware, getProtectedData);
 
