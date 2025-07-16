@@ -4,9 +4,9 @@ const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'JWT bilan API',
+      title: 'Zuhr Star CRM',
       version: '1.0.0',
-      description: 'JWT autentifikatsiya bilan Express API',
+      description: 'API lar toplami',
     },
     servers: [
       {

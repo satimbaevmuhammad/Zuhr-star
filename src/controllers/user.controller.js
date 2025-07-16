@@ -1,20 +1,49 @@
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const User = require('../models/user.model');
 
-const loginUser = (req, res) => {
-  const { email, password } = req.body;
+// Superadmin user qo‘shadi
+exports.registerUser = async (req, res) => {
+  try {
+    const { name, phone, password, role } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-  // oddiy test uchun hardcoded user
-  if (email === 'test@example.com' && password === '123456') {
-    const token = jwt.sign({ id: 1, email }, process.env.JWT_SECRET, { expiresIn: '1d' });
+    const user = await User.create({
+      name,
+      phone,
+      password: hashedPassword,
+      role,
+    });
 
-    return res.json({ token });
+    res.status(201).json({ message: 'User yaratildi', user });
+  } catch (error) {
+    res.status(500).json({ message: 'Xatolik', error });
   }
-
-  res.status(401).json({ message: 'Login yoki parol xato' });
 };
 
-const getProtectedData = (req, res) => {
-  res.json({ message: `Xush kelibsiz, foydalanuvchi ID: ${req.user.id}` });
+// Login
+exports.loginUser = async (req, res) => {
+  try {
+    const { phone, password } = req.body;
+    const user = await User.findOne({ phone });
+    if (!user) return res.status(404).json({ message: 'User topilmadi' });
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(401).json({ message: 'Parol noto‘g‘ri' });
+
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: '1d' }
+    );
+
+    res.json({ token });
+  } catch (err) {
+    res.status(500).json({ message: 'Server xatosi' });
+  }
 };
 
-module.exports = { loginUser, getProtectedData };
+// Himoyalangan ma'lumot
+exports.getProtectedData = (req, res) => {
+  res.json({ message: `Xush kelibsiz, ${req.user.role}` });
+};
