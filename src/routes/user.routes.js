@@ -22,23 +22,29 @@ const checkRole = require('../middlewares/checkRole');
  *         description: Admin allaqachon mavjud
  */
 router.post('/create-admin', async (req, res) => {
-  const bcrypt = require('bcrypt');
-  const User = require('../models/user.model');
+  try {
+    const bcrypt = require('bcrypt');
+    const User = require('../models/user.model');
 
-  const existing = await User.findOne({ phone: '+998911234567' });
-  if (existing) return res.status(400).json({ message: 'Admin allaqachon mavjud' });
+    const existing = await User.findOne({ phone: '+998911234567' });
+    if (existing) return res.status(400).json({ message: 'Admin allaqachon mavjud' });
 
-  const hashedPassword = await bcrypt.hash('123456', 10);
+    const hashedPassword = await bcrypt.hash('123456', 10);
 
-  const admin = await User.create({
-    name: 'Super Admin',
-    phone: '+998911234567',
-    password: hashedPassword,
-    role: 'superadmin',
-  });
+    const admin = await User.create({
+      name: 'Super Admin',
+      phone: '+998911234567',
+      password: hashedPassword,
+      role: 'superadmin',
+    });
 
-  res.json({ message: 'Superadmin yaratildi', admin });
+    res.json({ message: 'Superadmin yaratildi', admin });
+  } catch (err) {
+    console.error('❌ Xatolik:', err); // Bu chiqadi terminalga
+    res.status(500).json({ message: 'Internal server error' });
+  }
 });
+
 
 /**
  * @swagger
