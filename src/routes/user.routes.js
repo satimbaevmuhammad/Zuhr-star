@@ -9,7 +9,18 @@ const {
 const auth = require('../middlewares/auth.middleware');
 const checkRole = require('../middlewares/checkRole');
 
-// Faqat 1 marta ishlatish uchun ADMIN yaratish
+/**
+ * @swagger
+ * /api/users/create-admin:
+ *   post:
+ *     summary: Faqat 1 marta ishlatish uchun superadmin yaratish
+ *     description: Telefon raqam va parol avtomatik beriladi
+ *     responses:
+ *       200:
+ *         description: Superadmin yaratildi
+ *       400:
+ *         description: Admin allaqachon mavjud
+ */
 router.post('/create-admin', async (req, res) => {
   const bcrypt = require('bcrypt');
   const User = require('../models/user.model');
@@ -29,13 +40,80 @@ router.post('/create-admin', async (req, res) => {
   res.json({ message: 'Superadmin yaratildi', admin });
 });
 
-// Login
+/**
+ * @swagger
+ * /api/users/login:
+ *   post:
+ *     summary: Login va JWT token olish
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               phone:
+ *                 type: string
+ *                 example: +998911234567
+ *               password:
+ *                 type: string
+ *                 example: 123456
+ *     responses:
+ *       200:
+ *         description: Token muvaffaqiyatli qaytarildi
+ *       401:
+ *         description: Login yoki parol xato
+ */
 router.post('/login', loginUser);
 
-// Faqat superadmin boshqa user qo‘shadi
+/**
+ * @swagger
+ * /api/users/register:
+ *   post:
+ *     summary: Superadmin tomonidan yangi user ro'yxatdan o'tkaziladi
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: Ali Valiyev
+ *               phone:
+ *                 type: string
+ *                 example: +998991234567
+ *               password:
+ *                 type: string
+ *                 example: secret123
+ *               role:
+ *                 type: string
+ *                 enum: [user, admin, superadmin]
+ *                 example: user
+ *     responses:
+ *       201:
+ *         description: Yangi foydalanuvchi yaratildi
+ *       403:
+ *         description: Ruxsat yo‘q
+ */
 router.post('/register', auth, checkRole('superadmin'), registerUser);
 
-// Himoyalangan route
+/**
+ * @swagger
+ * /api/users/protected:
+ *   get:
+ *     summary: Token orqali himoyalangan ma'lumot olish
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Muvaffaqiyatli token orqali ma'lumot olindi
+ *       401:
+ *         description: Token yo'q yoki noto'g'ri
+ */
 router.get('/protected', auth, getProtectedData);
 
 module.exports = router;
