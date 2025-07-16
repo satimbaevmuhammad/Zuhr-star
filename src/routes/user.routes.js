@@ -5,10 +5,27 @@ const authMiddleware = require('../middlewares/auth.middleware');
 
 /**
  * @swagger
- * /api/users:
- *   get:
- *     summary: Get all users
+ * /api/users/login:
+ *   post:
+ *     summary: Login and get token
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: test@example.com
+ *               password:
+ *                 type: string
+ *                 example: 123456
+ *     responses:
+ *       200:
+ *         description: JWT token qaytariladi
  */
+
 router.get('/', (req, res) => {
   res.json([
     { id: 1, name: 'John Doe' },
