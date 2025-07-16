@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 
-// Superadmin user qo‘shadi
 exports.registerUser = async (req, res) => {
   try {
     const { name, phone, password, role } = req.body;
@@ -21,7 +20,6 @@ exports.registerUser = async (req, res) => {
   }
 };
 
-// Login
 exports.loginUser = async (req, res) => {
   try {
     const { phone, password } = req.body;
@@ -31,14 +29,12 @@ exports.loginUser = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(401).json({ message: 'Parol noto‘g‘ri' });
 
-    // Access token (короткий срок)
     const accessToken = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: '15m' }
+      { expiresIn: '2h' }
     );
 
-    // Refresh token (долгий срок)
     const refreshToken = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_REFRESH_SECRET,
@@ -55,7 +51,7 @@ exports.loginUser = async (req, res) => {
       }
     });
   } catch (err) {
-    res.status(500).json({ message: 'Server xatosi' });
+    res.status(500).json({ message: 'Server xatosi', error: err });
   }
 };
 

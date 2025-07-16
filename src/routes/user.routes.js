@@ -41,7 +41,7 @@ router.post('/create-admin', async (req, res) => {
 
     res.json({ message: 'Superadmin yaratildi', admin });
   } catch (err) {
-    console.error('❌ CREATE-ADMIN ERROR:', err); // 👈 BUNI TERMINALDA KO'RAMIZ
+    console.error('❌ CREATE-ADMIN ERROR:', err);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
@@ -123,37 +123,6 @@ router.post('/register', auth, checkRole('superadmin'), registerUser);
  *         description: Token yo'q yoki noto'g'ri
  */
 router.get('/protected', auth, getProtectedData);
-
-/**
- * @swagger
- * /api/users/refresh:
- *   post:
- *     summary: Получить новый access token по refresh token
- *     description: Принимает refresh token и возвращает новый access token.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               refreshToken:
- *                 type: string
- *                 example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
- *     responses:
- *       200:
- *         description: Новый access token успешно выдан
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 accessToken:
- *                   type: string
- *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
- *       401:
- *         description: Refresh token невалидный или истёк
- */
 router.post('/refresh', async (req, res) => {
   const { refreshToken } = req.body;
   if (!refreshToken) return res.status(401).json({ message: 'Refresh token kerak' });
