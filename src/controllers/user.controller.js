@@ -37,7 +37,14 @@ exports.loginUser = async (req, res) => {
       { expiresIn: '1d' }
     );
 
-    res.json({ token });
+    res.json({
+      token,
+      user: {
+        name: user.name,
+        phone: user.phone,
+        role: user.role
+      }
+    });
   } catch (err) {
     res.status(500).json({ message: 'Server xatosi' });
   }
