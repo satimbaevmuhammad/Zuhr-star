@@ -10,7 +10,7 @@ const options = {
     },
     servers: [
       {
-        url: 'https://zuhr-star-4.onrender.com',
+        url: 'https://zuhrstar-production.up.railway.app',
       },
     ],
   },
