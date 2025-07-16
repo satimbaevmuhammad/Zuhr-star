@@ -1,3 +1,4 @@
+// src/config/swagger.js
 const swaggerJsdoc = require('swagger-jsdoc');
 
 const options = {
@@ -14,9 +15,9 @@ const options = {
       },
     ],
   },
-  apis: ['./src/routes/*.js'], // Bu commentlar yozilgan route papkasi
+  apis: ['./src/routes/*.js'], // Yo'lni to'g'ri ko'rsating
 };
 
 const swaggerSpec = swaggerJsdoc(options);
 
-module.exports = swaggerSpec; // Faqat `spec` ni export qilamiz
+module.exports = swaggerSpec;
