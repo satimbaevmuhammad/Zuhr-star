@@ -40,10 +40,11 @@ router.post('/create-admin', async (req, res) => {
 
     res.json({ message: 'Superadmin yaratildi', admin });
   } catch (err) {
-    console.error('❌ Xatolik:', err); // Bu chiqadi terminalga
+    console.error('❌ CREATE-ADMIN ERROR:', err); // 👈 BUNI TERMINALDA KO'RAMIZ
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
 
 
 /**
