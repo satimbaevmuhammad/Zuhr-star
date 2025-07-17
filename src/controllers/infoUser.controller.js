@@ -60,7 +60,6 @@ exports.deleteInfoUser = async (req, res) => {
   }
 };
 
-// Обновить infoUser по fullname
 exports.updateInfoUserByFullname = async (req, res) => {
   try {
     const { firstname, lastname } = req.params;
@@ -73,7 +72,6 @@ exports.updateInfoUserByFullname = async (req, res) => {
   }
 };
 
-// Удалить infoUser по fullname
 exports.deleteInfoUserByFullname = async (req, res) => {
   try {
     const { firstname, lastname } = req.params;
