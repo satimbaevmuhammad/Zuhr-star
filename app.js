@@ -12,6 +12,9 @@ try {
 
 const userRoutes = require('./src/routes/user.routes');
 const infoUserRoutes = require('./src/routes/infoUser.routes');
+const groupRoutes = require('./src/routes/group.routes');
+const attendanceRoutes = require('./src/routes/attendance.routes');
+const studentRoutes = require('./src/routes/student.routes');
 
 const app = express();
 
@@ -21,6 +24,9 @@ app.use(express.json());
 // API routes
 app.use('/api/users', userRoutes);
 app.use('/api/info-users', infoUserRoutes);
+app.use('/api/groups', groupRoutes);
+app.use('/api/attendance', attendanceRoutes);
+app.use('/api/students', studentRoutes);
 
 // Test route
 app.get('/', (req, res) => {

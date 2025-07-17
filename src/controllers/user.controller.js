@@ -21,7 +21,6 @@ exports.registerUser = async (req, res) => {
       skype_username
     });
 
-    // Создаём infoUser
     await InfoUser.create({
       fullname,
       phone,
