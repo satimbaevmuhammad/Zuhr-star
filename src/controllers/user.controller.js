@@ -1,17 +1,36 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const InfoUser = require('../models/infoUser.model');
 const User = require('../models/user.model');
 
 exports.registerUser = async (req, res) => {
   try {
-    const { name, phone, password, role } = req.body;
+    const { fullname, phone, password, role, position, company, location, birthday_date, email, skype_username } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
-      name,
+      fullname,
       phone,
       password: hashedPassword,
       role,
+      position,
+      company,
+      location,
+      birthday_date,
+      email,
+      skype_username
+    });
+
+    // Создаём infoUser
+    await InfoUser.create({
+      fullname,
+      phone,
+      position,
+      company,
+      location,
+      birthday_date,
+      email,
+      skype_username
     });
 
     res.status(201).json({ message: 'User yaratildi', user });
@@ -55,7 +74,19 @@ exports.loginUser = async (req, res) => {
   }
 };
 
-// Himoyalangan ma'lumot
 exports.getProtectedData = (req, res) => {
   res.json({ message: `Xush kelibsiz, ${req.user.role}` });
+};
+
+exports.getUserAndInfoByFullname = async (req, res) => {
+  try {
+    const { firstname, lastname } = req.params;
+    const fullname = `${firstname} ${lastname}`;
+    const user = await User.findOne({ fullname });
+    if (!user) return res.status(404).json({ message: 'Пользователь не найден в users' });
+    const infoUser = await InfoUser.findOne({ phone: user.phone });
+    res.json({ user, infoUser });
+  } catch (error) {
+    res.status(500).json({ message: 'Ошибка при поиске', error });
+  }
 };

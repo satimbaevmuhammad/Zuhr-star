@@ -11,6 +11,7 @@ try {
 }
 
 const userRoutes = require('./src/routes/user.routes');
+const infoUserRoutes = require('./src/routes/infoUser.routes');
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use(express.json());
 
 // API routes
 app.use('/api/users', userRoutes);
+app.use('/api/info-users', infoUserRoutes);
 
 // Test route
 app.get('/', (req, res) => {

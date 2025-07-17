@@ -4,6 +4,7 @@ const {
   loginUser,
   registerUser,
   getProtectedData,
+  getUserAndInfoByFullname,
 } = require('../controllers/user.controller');
 
 const auth = require('../middlewares/auth.middleware');
@@ -22,7 +23,7 @@ const jwt = require('jsonwebtoken');
  *       400:
  *         description: Admin allaqachon mavjud
  */
-router.post('/create-admin', async (req, res) => {
+router.post('/create-admin', auth, async (req, res) => {
   try {
     const bcrypt = require('bcrypt');
     const User = require('../models/user.model');
@@ -52,6 +53,8 @@ router.post('/create-admin', async (req, res) => {
  * @swagger
  * /api/users/login:
  *   post:
+ *     tags:
+ *       - auth
  *     summary: Login va JWT token olish
  *     requestBody:
  *       required: true
@@ -78,7 +81,9 @@ router.post('/login', loginUser);
  * @swagger
  * /api/users/register:
  *   post:
- *     summary: Superadmin tomonidan yangi user ro'yxatdan o'tkaziladi
+ *     tags:
+ *       - users
+ *     summary: Регистрация нового пользователя (только основные данные)
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -88,24 +93,24 @@ router.post('/login', loginUser);
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               fullname:
  *                 type: string
- *                 example: Ali Valiyev
+ *                 example: Behruz Satimbaev
  *               phone:
  *                 type: string
- *                 example: +998991234567
+ *                 example: +998901234567
  *               password:
  *                 type: string
  *                 example: secret123
  *               role:
  *                 type: string
- *                 enum: [user, admin, superadmin]
- *                 example: user
+ *                 enum: [Mentor, HeadMentor, SupportTeacher, admin, superadmin]
+ *                 example: Mentor
  *     responses:
  *       201:
- *         description: Yangi foydalanuvchi yaratildi
+ *         description: Новый пользователь создан
  *       403:
- *         description: Ruxsat yo‘q
+ *         description: Нет прав
  */
 router.post('/register', auth, checkRole('superadmin'), registerUser);
 
@@ -123,7 +128,7 @@ router.post('/register', auth, checkRole('superadmin'), registerUser);
  *         description: Token yo'q yoki noto'g'ri
  */
 router.get('/protected', auth, getProtectedData);
-router.post('/refresh', async (req, res) => {
+router.post('/refresh', auth, async (req, res) => {
   const { refreshToken } = req.body;
   if (!refreshToken) return res.status(401).json({ message: 'Refresh token kerak' });
 
@@ -139,5 +144,32 @@ router.post('/refresh', async (req, res) => {
     return res.status(401).json({ message: 'Refresh token noto‘g‘ri yoki eskirgan' });
   }
 });
+
+/**
+ * @swagger
+ * /api/users/{firstname}/{lastname}:
+ *   get:
+ *     tags: [users]
+ *     summary: Получить user и infoUser по fullname
+ *     parameters:
+ *       - in: path
+ *         name: firstname
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Имя пользователя
+ *       - in: path
+ *         name: lastname
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Фамилия пользователя
+ *     responses:
+ *       200:
+ *         description: Объекты user и infoUser
+ *       404:
+ *         description: Пользователь не найден
+ */
+router.get('/:firstname/:lastname', auth, getUserAndInfoByFullname);
 
 module.exports = router;

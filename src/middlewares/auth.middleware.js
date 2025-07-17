@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
-  const refreshToken = req.headers['x-refresh-token'] || req.body.refreshToken;
+  const refreshToken = req.headers['x-refresh-token'] || req.body?.refreshToken;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ message: 'Token kerak' });

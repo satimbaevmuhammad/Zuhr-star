@@ -1,4 +1,5 @@
 const swaggerJsdoc = require('swagger-jsdoc');
+const path = require('path');
 
 const options = {
   definition: {
@@ -10,13 +11,27 @@ const options = {
     },
     servers: [
       {
-        url: 'https://zuhrstar-production.up.railway.app',
+        url: 'https://zuhrstar-production.up.railway.app/',
       },
     ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'https',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        }
+      }
+    },
+    security: [
+      {
+        bearerAuth: []
+      }
+    ]
   },
-  apis: ['./src/routes/*.js'], // Bu commentlar yozilgan route papkasi
+  apis: [path.join(__dirname, '../routes/*.js')],
 };
 
 const swaggerSpec = swaggerJsdoc(options);
 
-module.exports = swaggerSpec; // Faqat `spec` ni export qilamiz
+module.exports = swaggerSpec; 
