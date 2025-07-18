@@ -15,6 +15,7 @@ const infoUserRoutes = require('./src/routes/infoUser.routes');
 const groupRoutes = require('./src/routes/group.routes');
 const attendanceRoutes = require('./src/routes/attendance.routes');
 const studentRoutes = require('./src/routes/student.routes');
+const courseRoutes = require('./src/routes/course.routes');
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use('/api/info-users', infoUserRoutes);
 app.use('/api/groups', groupRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/students', studentRoutes);
+app.use('/api/courses', courseRoutes);
 
 // Test route
 app.get('/', (req, res) => {
