@@ -89,3 +89,27 @@ exports.getUserAndInfoByFullname = async (req, res) => {
     res.status(500).json({ message: 'Ошибка при поиске', error });
   }
 };
+
+exports.updateUserByFullname = async (req, res) => {
+  try {
+    const { firstname, lastname } = req.params;
+    const fullname = `${firstname} ${lastname}`;
+    const user = await User.findOneAndUpdate({ fullname }, req.body, { new: true });
+    if (!user) return res.status(404).json({ message: 'Пользователь не найден' });
+    res.json({ message: 'Пользователь обновлён', user });
+  } catch (error) {
+    res.status(500).json({ message: 'Ошибка при обновлении пользователя', error });
+  }
+};
+
+exports.deleteUserByFullname = async (req, res) => {
+  try {
+    const { firstname, lastname } = req.params;
+    const fullname = `${firstname} ${lastname}`;
+    const user = await User.findOneAndDelete({ fullname });
+    if (!user) return res.status(404).json({ message: 'Пользователь не найден' });
+    res.json({ message: 'Пользователь удалён' });
+  } catch (error) {
+    res.status(500).json({ message: 'Ошибка при удалении пользователя', error });
+  }
+};

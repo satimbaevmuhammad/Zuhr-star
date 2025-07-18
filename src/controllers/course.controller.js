@@ -2,7 +2,12 @@ const Course = require('../models/course.model');
 
 exports.createCourse = async (req, res) => {
   try {
-    const course = await Course.create(req.body);
+    const { groups_count, ...rest } = req.body;
+    const course = await Course.create(rest);
+    // Пересчитываем groups_count сразу после создания
+    const count = await require('../models/group.model').countDocuments({ course: course.name });
+    course.groups_count = count;
+    await course.save();
     res.status(201).json(course);
   } catch (error) {
     res.status(500).json({ message: 'Ошибка при создании курса', error });
@@ -80,8 +85,13 @@ exports.getCourseByName = async (req, res) => {
 
 exports.updateCourseByName = async (req, res) => {
   try {
-    const course = await Course.findOneAndUpdate({ name: req.params.name }, req.body, { new: true });
+    const { groups_count, ...rest } = req.body;
+    const course = await Course.findOneAndUpdate({ name: req.params.name }, rest, { new: true });
     if (!course) return res.status(404).json({ message: 'Курс не найден' });
+    // Пересчитываем groups_count после обновления
+    const count = await require('../models/group.model').countDocuments({ course: course.name });
+    course.groups_count = count;
+    await course.save();
     res.json(course);
   } catch (error) {
     res.status(500).json({ message: 'Ошибка при обновлении курса', error });

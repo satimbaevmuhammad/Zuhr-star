@@ -5,6 +5,8 @@ const {
   registerUser,
   getProtectedData,
   getUserAndInfoByFullname,
+  updateUserByFullname,
+  deleteUserByFullname,
 } = require('../controllers/user.controller');
 
 const auth = require('../middlewares/auth.middleware');
@@ -171,5 +173,79 @@ router.post('/refresh', auth, async (req, res) => {
  *         description: Пользователь не найден
  */
 router.get('/:firstname/:lastname', auth, getUserAndInfoByFullname);
+
+/**
+ * @swagger
+ * /api/users/{firstname}/{lastname}:
+ *   put:
+ *     tags: [users]
+ *     summary: Обновить user по fullname
+ *     parameters:
+ *       - in: path
+ *         name: firstname
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Имя пользователя
+ *       - in: path
+ *         name: lastname
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Фамилия пользователя
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               fullname:
+ *                 type: string
+ *                 example: "Behruz Satimbaev"
+ *               phone:
+ *                 type: string
+ *                 example: "+998901234567"
+ *               password:
+ *                 type: string
+ *                 example: "secret123"
+ *               role:
+ *                 type: string
+ *                 enum: [Mentor, HeadMentor, SupportTeacher, admin, superadmin]
+ *                 example: Mentor
+ *     responses:
+ *       200:
+ *         description: Пользователь обновлён
+ *       404:
+ *         description: Пользователь не найден
+ */
+router.put('/:firstname/:lastname', auth, updateUserByFullname);
+
+/**
+ * @swagger
+ * /api/users/{firstname}/{lastname}:
+ *   delete:
+ *     tags: [users]
+ *     summary: Удалить user по fullname
+ *     parameters:
+ *       - in: path
+ *         name: firstname
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Имя пользователя
+ *       - in: path
+ *         name: lastname
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Фамилия пользователя
+ *     responses:
+ *       200:
+ *         description: Пользователь удалён
+ *       404:
+ *         description: Пользователь не найден
+ */
+router.delete('/:firstname/:lastname', auth, deleteUserByFullname);
 
 module.exports = router;
